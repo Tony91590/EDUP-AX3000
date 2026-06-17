@@ -28,6 +28,9 @@ env:
   UPLOAD_RELEASE: true
   UPLOAD_PACKAGES: true
   TZ: Europe/Paris
+  
+permissions:
+  contents: write
 
 jobs:
   build:
