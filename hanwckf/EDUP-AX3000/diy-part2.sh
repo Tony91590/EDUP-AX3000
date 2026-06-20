@@ -29,3 +29,4 @@ cat > package/base-files/files/etc/banner << EOF
  %D %V, %C
  -----------------------------------------------------
 EOF
+grep -R '\["FR"\]' package/mtk/applications/mtwifi-cfg/files/mtwifi-cfg/mtwifi_defs.lua
