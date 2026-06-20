@@ -4,9 +4,9 @@
 #
 # This is free software, licensed under the MIT License.
 # See /LICENSE for more information.
-package/mtk/applications/mtwifi-cfg/files/mtwifi-cfg/mtwifi_defs.lua
-# ["FR"] = { 1, 2 },/["FR"] = { 1, 1 },
+# 
 # Custom for EDUP-AX3000 112m
+sed -i 's/\["FR"\] = { 1, 2 },/\["FR"\] = { 1, 1 },/' package/mtk/applications/mtwifi-cfg/files/mtwifi-cfg/mtwifi_defs.lua
 sed -i 's/ImmortalWrt/OpenWrt/g' package/base-files/files/bin/config_generate
 sed -i 's/ImmortalWrt/OpenWrt/g' package/mtk/applications/mtwifi-cfg/files/mtwifi.sh
 sed -i 's/pool.ntp.org/3.openwrt.pool.ntp.org/g' package/base-files/files/bin/config_generate
