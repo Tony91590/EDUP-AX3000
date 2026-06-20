@@ -4,7 +4,7 @@
 #
 # This is free software, licensed under the MIT License.
 # See /LICENSE for more information.
-#
+# ["FR"] = { 1, 2 },/["FR"] = { 1, 1 },
 # Custom for EDUP-AX3000 112m
 sed -i 's/ImmortalWrt/OpenWrt/g' package/base-files/files/bin/config_generate
 sed -i 's/ImmortalWrt/OpenWrt/g' package/mtk/applications/mtwifi-cfg/files/mtwifi.sh
