@@ -20,5 +20,5 @@ sed -i 's/default-settings-chn/default-settings/g' include/target.mk
 #sed -i 's,https://github.com/immortalwrt/immortalwrt/discussions,https://forum.openwrt.org/,g' include/version.mk
 #sed -i 's,https://downloads.immortalwrt.org/releases/21.02-SNAPSHOT,https://downloads.openwrt.org/releases/21.02.7,g' include/version.mk
 grep -R '\["FR"\]' package/mtk/applications/mtwifi-cfg/files/mtwifi-cfg/mtwifi_defs.lua
-cp $GITHUB_WORKSPACE/hanwckf/EDUP-AX3000/patch/7661-022-fix-rrm-snprintf-error.patch feeds/packages/net/ddns-scripts/files/
-cp $GITHUB_WORKSPACE/hanwckf/EDUP-AX3000/patch/022-fix-rrm-snprintf-error.patch package/base-files/files/etc/
+cp $GITHUB_WORKSPACE/hanwckf/EDUP-AX3000/patch/7661-022-fix-rrm-snprintf-error.patch package/mtk/drivers/mt_wifi/patches/
+#cp $GITHUB_WORKSPACE/hanwckf/EDUP-AX3000/patch/022-fix-rrm-snprintf-error.patch package/base-files/files/etc/
