@@ -21,40 +21,48 @@ mkdir -p files/etc/uci-defaults
 cat > files/etc/uci-defaults/99-default-settings << 'EOF'
 #!/bin/sh
 
-# LuCI
-uci set luci.main.mediaurlbase='/luci-static/argon'
+# LuCI theme (optional: does not fail if Argon is missing)
+uci -q set luci.main.mediaurlbase='/luci-static/argon'
 uci commit luci
 
-# Automatically configure Wi-Fi by band to avoid the radio0/radio1 order being reversed
-for radio in $(uci show wireless | grep "=wifi-device" | cut -d. -f2 | cut -d= -f1); do
+# Iterate over wireless radios in a safe way
+for radio in $(uci show wireless | sed -n "s/^wireless\.\(radio[0-9]\+\)=wifi-device.*/\1/p"); do
+
+    # Get Wi-Fi band (fallback to hwmode if band is not available)
     band="$(uci -q get wireless.$radio.band)"
+    [ -z "$band" ] && band="$(uci -q get wireless.$radio.hwmode)"
 
-    # Find the first wifi-iface corresponding to this radio
-    iface="$(uci show wireless | grep ".device='$radio'" | head -n1 | cut -d. -f2 | cut -d= -f1)"
+    # Get first wifi-iface bound to this radio
+    iface="$(uci show wireless | sed -n "s/^wireless\.\(wifinet[0-9]\+\)\.device='$radio'.*/\1/p" | head -n1)"
 
+    # Skip if no interface found
     [ -z "$iface" ] && continue
 
-    # 2.4G
-    if [ "$band" = "2g" ]; then
+    # Ensure radio is enabled
+    uci set wireless.$radio.disabled='0'
+
+    # Configure 2.4 GHz interfaces
+    if [ "$band" = "2g" ] || echo "$band" | grep -q "11g"; then
         uci set wireless.$iface.ssid='OpenWrt_2.4G'
-        uci set wireless.$iface.encryption='psk2'
+        uci set wireless.$iface.encryption='psk2+ccmp'
         uci set wireless.$iface.key='12345678'
         uci set wireless.$iface.disabled='0'
-        uci set wireless.$radio.disabled='0'
     fi
 
-    # 5G
-    if [ "$band" = "5g" ]; then
+    # Configure 5 GHz interfaces
+    if [ "$band" = "5g" ] || echo "$band" | grep -q "11a"; then
         uci set wireless.$iface.ssid='OpenWrt_5G'
-        uci set wireless.$iface.encryption='psk2'
+        uci set wireless.$iface.encryption='psk2+ccmp'
         uci set wireless.$iface.key='12345678'
         uci set wireless.$iface.disabled='0'
-        uci set wireless.$radio.disabled='0'
     fi
+
 done
 
+# Commit wireless configuration changes
 uci commit wireless
 
+# Remove this uci-defaults script after first boot execution
 rm -f /etc/uci-defaults/99-default-settings
 
 exit 0
