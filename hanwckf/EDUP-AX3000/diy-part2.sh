@@ -26,7 +26,7 @@ cat > files/etc/uci-defaults/99-default-settings << 'EOF'
 uci set luci.main.mediaurlbase='/luci-static/argon'
 uci commit luci
 
-# 按频段自动设置 Wi-Fi，避免 radio0/radio1 顺序反了
+# Automatically configure Wi-Fi by band to avoid the radio0/radio1 order being reversed
 
 for radio in $(uci show wireless | grep "=wifi-device" | cut -d. -f2 | cut -d= -f1); do
     band="$(uci -q get wireless.$radio.band)"
