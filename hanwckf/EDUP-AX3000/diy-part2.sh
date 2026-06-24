@@ -29,11 +29,11 @@ uci commit luci
 uci set wireless.@wifi-device[0].disabled='0'
 uci set wireless.@wifi-iface[0].disabled='0'
 uci set wireless.@wifi-iface[0].encryption='none'
-uci set wireless.@wifi-iface[0].ssid="$wlan_name"
+uci set wireless.@wifi-iface[0].ssid="OpenWrt_2.4G"
 uci set wireless.@wifi-device[1].disabled='0'
 uci set wireless.@wifi-iface[1].disabled='0'
 uci set wireless.@wifi-iface[1].encryption='none'
-uci set wireless.@wifi-iface[1].ssid="$wlan_name"
+uci set wireless.@wifi-iface[1].ssid="OpenWrt_5G"
 uci commit wireless
   
 # Remove this uci-defaults script after first boot execution
