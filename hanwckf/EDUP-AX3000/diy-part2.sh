@@ -15,20 +15,16 @@
 
 # ===== Argon Theme =====
 
-rm -rf package/luci-theme-argon
-rm -rf package/luci-app-argon-config
+#rm -rf package/luci-theme-argon
+#rm -rf package/luci-app-argon-config
 
-git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
-git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config.git package/luci-app-argon-config
+#git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
+#git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config.git package/luci-app-argon-config
 
 mkdir -p files/etc/uci-defaults
 
 cat > files/etc/uci-defaults/99-default-settings << 'EOF'
 #!/bin/sh
-
-# LuCI theme
-uci -q set luci.main.mediaurlbase='/luci-static/argon'
-uci commit luci
 
 # Configure WLAN
 uci set wireless.@wifi-device[0].disabled='0'
