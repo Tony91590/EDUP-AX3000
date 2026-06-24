@@ -21,7 +21,7 @@ mkdir -p files/etc/uci-defaults
 cat > files/etc/uci-defaults/99-default-settings << 'EOF'
 #!/bin/sh
 
-# LuCI theme (optional: does not fail if Argon is missing)
+# LuCI theme
 uci -q set luci.main.mediaurlbase='/luci-static/argon'
 uci commit luci
 
