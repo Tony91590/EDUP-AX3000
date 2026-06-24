@@ -44,11 +44,11 @@ git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config.git packa
 # Définir Argon comme thème par défaut
 mkdir -p files/etc/uci-defaults
 
-cat > files/etc/uci-defaults/99-argon << 'EOF'
+cat > files/etc/uci-defaults/99-default-settings << 'EOF'
 #!/bin/sh
 uci set luci.main.mediaurlbase='/luci-static/argon'
 uci commit luci
 exit 0
 EOF
 
-chmod +x files/etc/uci-defaults/99-argon
+chmod +x files/etc/uci-defaults/99-default-settings
