@@ -8,6 +8,11 @@
 # Custom for EDUP-AX3000 112m
 #
 
+git clone -b openwrt-25.10 https://github.com/immortalwrt/immortalwrt.git tmp_imm
+
+cp -r tmp_imm/package/emortal package/
+rm -rf tmp_imm
+
 # ===== Argon Theme =====
 
 rm -rf package/luci-theme-argon
