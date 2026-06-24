@@ -25,7 +25,7 @@ cat > files/etc/uci-defaults/99-default-settings << 'EOF'
 uci -q set luci.main.mediaurlbase='/luci-static/argon'
 uci commit luci
 
-# Configure WLAN (open network, no password)
+# Configure WLAN
 uci set wireless.@wifi-device[0].disabled='0'
 uci set wireless.@wifi-iface[0].disabled='0'
 uci set wireless.@wifi-iface[0].encryption='none'
