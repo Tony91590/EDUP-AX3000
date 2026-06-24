@@ -39,4 +39,28 @@ cat > files/etc/uci-defaults/99-default-settings << 'EOF'
 exit 0
 EOF
 
+
+#!/bin/sh
+
+# Enable radios (robuste si radio0/radio1 existent)
+uci set wireless.radio0.disabled='0'
+uci set wireless.radio1.disabled='0'
+
+# 2.4 GHz
+uci set wireless.default_radio0.ssid='OpenWrt_2.4G'
+uci set wireless.default_radio0.disabled='0'
+uci set wireless.default_radio0.encryption='sae-mixed'
+uci set wireless.default_radio0.key='change_me_12345'
+
+# 5 GHz
+uci set wireless.default_radio1.ssid='OpenWrt_5G'
+uci set wireless.default_radio1.disabled='0'
+uci set wireless.default_radio1.encryption='sae-mixed'
+uci set wireless.default_radio1.key='change_me_12345'
+
+uci commit wireless
+wifi reload
+
+exit 0
+
 chmod +x files/etc/uci-defaults/99-default-settings
