@@ -25,37 +25,17 @@ cat > files/etc/uci-defaults/99-default-settings << 'EOF'
 uci -q set luci.main.mediaurlbase='/luci-static/argon'
 uci commit luci
 
-# Configuration
+# Configure WLAN (open network, no password)
 wlan_name="OpenWrt"
 
-# root_password=""
-# lan_ip_address="192.168.1.1/24"
-# pppoe_username=""
-# pppoe_password=""
-
-# Log potential errors
-exec >/tmp/setup.log 2>&1
-
-# Configure root password
-if [ -n "$root_password" ]; then
-  (echo "$root_password"; sleep 1; echo "$root_password") | passwd > /dev/null
-fi
-
-# Configure LAN
-if [ -n "$lan_ip_address" ]; then
-  uci set network.lan.ipaddr="$lan_ip_address"
-  uci commit network
-fi
-
-# Configure WLAN (open network, no password)
 if [ -n "$wlan_name" ]; then
-  # Radio 0 (généralement 2.4 GHz)
+  # Radio 0 (2.4 GHz)
   uci set wireless.@wifi-device[0].disabled='0'
   uci set wireless.@wifi-iface[0].disabled='0'
   uci set wireless.@wifi-iface[0].encryption='none'
   uci set wireless.@wifi-iface[0].ssid="$wlan_name"
 
-  # Radio 1 (généralement 5 GHz)
+  # Radio 1 (5 GHz)
   uci set wireless.@wifi-device[1].disabled='0'
   uci set wireless.@wifi-iface[1].disabled='0'
   uci set wireless.@wifi-iface[1].encryption='none'
@@ -63,16 +43,6 @@ if [ -n "$wlan_name" ]; then
 
   uci commit wireless
 fi
-
-# Configure PPPoE
-if [ -n "$pppoe_username" ] && [ -n "$pppoe_password" ]; then
-  uci set network.wan.proto='pppoe'
-  uci set network.wan.username="$pppoe_username"
-  uci set network.wan.password="$pppoe_password"
-  uci commit network
-fi
-
-echo "All done!"
 
 # Remove this uci-defaults script after first boot execution
 rm -f /etc/uci-defaults/99-default-settings
