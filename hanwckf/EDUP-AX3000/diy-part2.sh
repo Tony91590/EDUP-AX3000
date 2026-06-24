@@ -22,20 +22,43 @@ mkdir -p files/etc/uci-defaults
 cat > files/etc/uci-defaults/99-default-settings << 'EOF'
 #!/bin/sh
 
-  # Radio 0 (2.4 GHz)
-  uci set wireless.@wifi-device[0].disabled='0'
-  uci set wireless.@wifi-iface[0].disabled='0'
-  uci set wireless.@wifi-iface[0].encryption='none'
-  uci set wireless.@wifi-iface[0].ssid="OpenWrt_2.4G"
+# LuCI
+uci set luci.main.mediaurlbase='/luci-static/argon'
+uci commit luci
 
-  # Radio 1 (5 GHz)
-  uci set wireless.@wifi-device[1].disabled='0'
-  uci set wireless.@wifi-iface[1].disabled='0'
-  uci set wireless.@wifi-iface[1].encryption='none'
-  uci set wireless.@wifi-iface[1].ssid="OpenWrt_5G"
+# 按频段自动设置 Wi-Fi，避免 radio0/radio1 顺序反了
 
-  uci commit wireless
-  
+for radio in $(uci show wireless | grep "=wifi-device" | cut -d. -f2 | cut -d= -f1); do
+    band="$(uci -q get wireless.$radio.band)"
+
+    # 找到这个 radio 对应的第一个 wifi-iface
+    iface="$(uci show wireless | grep ".device='$radio'" | head -n1 | cut -d. -f2 | cut -d= -f1)"
+
+    [ -z "$iface" ] && continue
+
+    # 2.4G
+    if [ "$band" = "2g" ]; then
+        uci set wireless.$iface.ssid='Cudy TR3000'
+        uci set wireless.$iface.encryption='psk2'
+        uci set wireless.$iface.key='12345678'
+        uci set wireless.$iface.disabled='0'
+        uci set wireless.$radio.disabled='0'
+    fi
+
+    # 5G
+    if [ "$band" = "5g" ]; then
+        uci set wireless.$iface.ssid='Cudy TR3000-5G'
+        uci set wireless.$iface.encryption='psk2'
+        uci set wireless.$iface.key='12345678'
+        uci set wireless.$iface.disabled='0'
+        uci set wireless.$radio.disabled='0'
+    fi
+done
+
+uci commit wireless
+
+rm -f /etc/uci-defaults/99-default-settings
+
 exit 0
 EOF
 
