@@ -26,24 +26,16 @@ uci -q set luci.main.mediaurlbase='/luci-static/argon'
 uci commit luci
 
 # Configure WLAN (open network, no password)
-wlan_name="OpenWrt"
-
-if [ -n "$wlan_name" ]; then
-  # Radio 0 (2.4 GHz)
-  uci set wireless.@wifi-device[0].disabled='0'
-  uci set wireless.@wifi-iface[0].disabled='0'
-  uci set wireless.@wifi-iface[0].encryption='none'
-  uci set wireless.@wifi-iface[0].ssid="$wlan_name"
-
-  # Radio 1 (5 GHz)
-  uci set wireless.@wifi-device[1].disabled='0'
-  uci set wireless.@wifi-iface[1].disabled='0'
-  uci set wireless.@wifi-iface[1].encryption='none'
-  uci set wireless.@wifi-iface[1].ssid="$wlan_name"
-
-  uci commit wireless
-fi
-
+uci set wireless.@wifi-device[0].disabled='0'
+uci set wireless.@wifi-iface[0].disabled='0'
+uci set wireless.@wifi-iface[0].encryption='none'
+uci set wireless.@wifi-iface[0].ssid="$wlan_name"
+uci set wireless.@wifi-device[1].disabled='0'
+uci set wireless.@wifi-iface[1].disabled='0'
+uci set wireless.@wifi-iface[1].encryption='none'
+uci set wireless.@wifi-iface[1].ssid="$wlan_name"
+uci commit wireless
+  
 # Remove this uci-defaults script after first boot execution
 rm -f /etc/uci-defaults/99-default-settings
 
