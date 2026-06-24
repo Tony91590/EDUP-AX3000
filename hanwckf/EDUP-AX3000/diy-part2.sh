@@ -25,42 +25,54 @@ cat > files/etc/uci-defaults/99-default-settings << 'EOF'
 uci -q set luci.main.mediaurlbase='/luci-static/argon'
 uci commit luci
 
-# Iterate over wireless radios in a safe way
-for radio in $(uci show wireless | sed -n "s/^wireless\.\(radio[0-9]\+\)=wifi-device.*/\1/p"); do
+# Configuration
+wlan_name="OpenWrt"
 
-    # Get Wi-Fi band (fallback to hwmode if band is not available)
-    band="$(uci -q get wireless.$radio.band)"
-    [ -z "$band" ] && band="$(uci -q get wireless.$radio.hwmode)"
+# root_password=""
+# lan_ip_address="192.168.1.1/24"
+# pppoe_username=""
+# pppoe_password=""
 
-    # Get first wifi-iface bound to this radio
-    iface="$(uci show wireless | sed -n "s/^wireless\.\(wifinet[0-9]\+\)\.device='$radio'.*/\1/p" | head -n1)"
+# Log potential errors
+exec >/tmp/setup.log 2>&1
 
-    # Skip if no interface found
-    [ -z "$iface" ] && continue
+# Configure root password
+if [ -n "$root_password" ]; then
+  (echo "$root_password"; sleep 1; echo "$root_password") | passwd > /dev/null
+fi
 
-    # Ensure radio is enabled
-    uci set wireless.$radio.disabled='0'
+# Configure LAN
+if [ -n "$lan_ip_address" ]; then
+  uci set network.lan.ipaddr="$lan_ip_address"
+  uci commit network
+fi
 
-    # Configure 2.4 GHz interfaces
-    if [ "$band" = "2g" ] || echo "$band" | grep -q "11g"; then
-        uci set wireless.$iface.ssid='OpenWrt_2.4G'
-        uci set wireless.$iface.encryption='psk2+ccmp'
-        uci set wireless.$iface.key='12345678'
-        uci set wireless.$iface.disabled='0'
-    fi
+# Configure WLAN (open network, no password)
+if [ -n "$wlan_name" ]; then
+  # Radio 0 (généralement 2.4 GHz)
+  uci set wireless.@wifi-device[0].disabled='0'
+  uci set wireless.@wifi-iface[0].disabled='0'
+  uci set wireless.@wifi-iface[0].encryption='none'
+  uci set wireless.@wifi-iface[0].ssid="$wlan_name"
 
-    # Configure 5 GHz interfaces
-    if [ "$band" = "5g" ] || echo "$band" | grep -q "11a"; then
-        uci set wireless.$iface.ssid='OpenWrt_5G'
-        uci set wireless.$iface.encryption='psk2+ccmp'
-        uci set wireless.$iface.key='12345678'
-        uci set wireless.$iface.disabled='0'
-    fi
+  # Radio 1 (généralement 5 GHz)
+  uci set wireless.@wifi-device[1].disabled='0'
+  uci set wireless.@wifi-iface[1].disabled='0'
+  uci set wireless.@wifi-iface[1].encryption='none'
+  uci set wireless.@wifi-iface[1].ssid="$wlan_name"
 
-done
+  uci commit wireless
+fi
 
-# Commit wireless configuration changes
-uci commit wireless
+# Configure PPPoE
+if [ -n "$pppoe_username" ] && [ -n "$pppoe_password" ]; then
+  uci set network.wan.proto='pppoe'
+  uci set network.wan.username="$pppoe_username"
+  uci set network.wan.password="$pppoe_password"
+  uci commit network
+fi
+
+echo "All done!"
 
 # Remove this uci-defaults script after first boot execution
 rm -f /etc/uci-defaults/99-default-settings
