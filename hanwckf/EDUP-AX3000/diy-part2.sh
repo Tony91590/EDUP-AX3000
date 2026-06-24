@@ -27,11 +27,10 @@ uci set luci.main.mediaurlbase='/luci-static/argon'
 uci commit luci
 
 # Automatically configure Wi-Fi by band to avoid the radio0/radio1 order being reversed
-
 for radio in $(uci show wireless | grep "=wifi-device" | cut -d. -f2 | cut -d= -f1); do
     band="$(uci -q get wireless.$radio.band)"
 
-    # 找到这个 radio 对应的第一个 wifi-iface
+    # Find the first wifi-iface corresponding to this radio
     iface="$(uci show wireless | grep ".device='$radio'" | head -n1 | cut -d. -f2 | cut -d= -f1)"
 
     [ -z "$iface" ] && continue
