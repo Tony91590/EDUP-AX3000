@@ -26,7 +26,7 @@ cat > files/etc/uci-defaults/99-default-settings << 'EOF'
   uci set wireless.@wifi-device[0].disabled='0'
   uci set wireless.@wifi-iface[0].disabled='0'
   uci set wireless.@wifi-iface[0].encryption='none'
-  uci set wireless.@wifi-iface[0].ssid="OpenWrt"
+  uci set wireless.@wifi-iface[0].ssid="OpenWrt_2.4G"
 
   # Radio 1 (5 GHz)
   uci set wireless.@wifi-device[1].disabled='0'
