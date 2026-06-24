@@ -37,7 +37,7 @@ for radio in $(uci show wireless | grep "=wifi-device" | cut -d. -f2 | cut -d= -
 
     # 2.4G
     if [ "$band" = "2g" ]; then
-        uci set wireless.$iface.ssid='Cudy TR3000'
+        uci set wireless.$iface.ssid='OpenWrt_2.4G'
         uci set wireless.$iface.encryption='psk2'
         uci set wireless.$iface.key='12345678'
         uci set wireless.$iface.disabled='0'
@@ -46,7 +46,7 @@ for radio in $(uci show wireless | grep "=wifi-device" | cut -d. -f2 | cut -d= -
 
     # 5G
     if [ "$band" = "5g" ]; then
-        uci set wireless.$iface.ssid='Cudy TR3000-5G'
+        uci set wireless.$iface.ssid='OpenWrt_5G'
         uci set wireless.$iface.encryption='psk2'
         uci set wireless.$iface.key='12345678'
         uci set wireless.$iface.disabled='0'
