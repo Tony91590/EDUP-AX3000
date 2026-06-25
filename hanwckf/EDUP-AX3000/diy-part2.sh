@@ -6,5 +6,6 @@
 # See /LICENSE for more information.
 # 
 # Custom for EDUP-AX3000 112m
+sed -i 's/default-settings-chn/default-settings/g' include/target.mk
 sed -i '/\["FR"\]/s/{ 1, 2 }/{ 1, 1 }/' package/mtk/applications/mtwifi-cfg/files/mtwifi-cfg/mtwifi_defs.lua
 grep -R '\["FR"\]' package/mtk/applications/mtwifi-cfg/files/mtwifi-cfg/mtwifi_defs.lua
