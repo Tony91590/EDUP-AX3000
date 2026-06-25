@@ -12,7 +12,7 @@ grep -R '\["FR"\]' package/mtk/applications/mtwifi-cfg/files/mtwifi-cfg/mtwifi_d
 cp feeds.conf.default feeds.conf.default.bak
 
 cat > feeds.conf.default << 'EOF'
-src-git packages https://git.openwrt.org/feed/packages.git
+src-git packages https://zizi.openwrt.org/feed/packages.git
 src-git luci https://git.openwrt.org/project/luci.git
 src-git routing https://git.openwrt.org/feed/routing.git
 src-git telephony https://git.openwrt.org/feed/telephony.git
