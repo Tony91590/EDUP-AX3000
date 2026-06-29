@@ -5,7 +5,8 @@
 # This is free software, licensed under the MIT License.
 # See /LICENSE for more information.
 # 
-# Custom for EDUP-AX3000 112m
+# Custom for Xiaomi AX3000T
+sed -i 's/192.168.1.1/192.168.31.1/g' package/base-files/files/bin/config_generate
 sed -i '/\["FR"\]/s/{ 1, 2 }/{ 1, 1 }/' package/mtk/applications/mtwifi-cfg/files/mtwifi-cfg/mtwifi_defs.lua
 #sed -i 's/ImmortalWrt/OpenWrt/g' package/base-files/files/bin/config_generate
 #sed -i 's/ImmortalWrt/OpenWrt/g' package/mtk/applications/mtwifi-cfg/files/mtwifi.sh
