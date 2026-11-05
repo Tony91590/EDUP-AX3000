@@ -1,3 +1,4 @@
+
 name: delete-older-releases
 
 on:
@@ -18,10 +19,10 @@ jobs:
         uses: Mattraks/delete-workflow-runs@v2.1.0
         with:
           token: ${{ github.token }}
-          retain_days: 1
+          retain_days: 5
           keep_minimum_runs: 0
 
-      - name: Delete old Releases
+      - name: Delete old Releases and tags
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -35,7 +36,7 @@ jobs:
             --limit 1000 \
             --order desc \
             --json tagName \
-            --jq '.[1:][].tagName')
+            --jq '.[5:][].tagName')
 
           if [ -z "$releases" ]; then
             echo "No old releases to delete."
@@ -45,36 +46,37 @@ jobs:
           while IFS= read -r tag; do
             [ -z "$tag" ] && continue
 
-            echo "Deleting release: $tag"
+            echo "--------------------------------"
+            echo "Processing: $tag"
 
-            # Delete release first, without automatic tag cleanup.
-            if gh release delete "$tag" \
+            # Delete release
+            if ! gh release delete "$tag" \
               --repo "$GITHUB_REPOSITORY" \
               --yes; then
-
-              echo "Release deleted: $tag"
-
-            else
-              echo "Failed to delete release: $tag"
-              continue
+              echo "::error::Failed to delete release: $tag"
+              exit 1
             fi
 
-            # Check whether the Git tag still exists.
-            if gh api \
-              "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" \
-              >/dev/null 2>&1; then
+            echo "Release deleted: $tag"
 
-              echo "Deleting tag: $tag"
+            # Delete Git tag reference
+            if output=$(gh api \
+              --method DELETE \
+              "repos/$GITHUB_REPOSITORY/git/refs/tags/$tag" 2>&1); then
 
-              gh api \
-                --method DELETE \
-                "repos/$GITHUB_REPOSITORY/git/refs/tags/$tag"
+              echo "Tag deleted: $tag"
 
             else
-              echo "Tag already absent: $tag"
+              if [[ "$output" == *"Reference does not exist"* ]]; then
+                echo "Tag already absent: $tag"
+              else
+                echo "::error::Failed to delete tag: $tag"
+                echo "$output"
+                exit 1
+              fi
             fi
 
           done <<< "$releases"
 
-          echo "Release cleanup completed."
-          
+          echo "--------------------------------"
+          echo "Release and tag cleanup completed."
